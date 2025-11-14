@@ -339,6 +339,32 @@ function resetTimer() {
       return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
+// 6917a3a6ae596e708f599f49 # BIN
+
+function syncToJsonBin() {
+  const data = {
+    scoreA,
+    scoreB,
+    setsA,
+    setsB,
+    setHistory,
+    timer: formatTime(timeLeft),
+    teamNameA: document.getElementById('teamNameA').value,
+    teamNameB: document.getElementById('teamNameB').value,
+    matchTitle: document.getElementById('matchTitle').value,
+    logoA: `logos/${(document.getElementById('teamNameA').value || "default").toLowerCase()}.png`,
+    logoB: `logos/${(document.getElementById('teamNameB').value || "default").toLowerCase()}.png`
+  };
+
+  fetch("https://api.jsonbin.io/v3/b/6917a3a6ae596e708f599f49", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Master-Key": "$2a$10$WBFKRxrLbxoZLEWjVn0Yx.FWKq3g4yTHITVSDxTwN5Vs9ZrFcorM."
+    },
+    body: JSON.stringify(data)
+  });
+}
 
 function resetMatch() {
   scoreA = 0;
@@ -500,5 +526,4 @@ function syncToServer() {
   </script>
 <audio id="buzzerSound" src="buzzer.mp3" preload="auto"></audio>
 </body>
-
 </html>
