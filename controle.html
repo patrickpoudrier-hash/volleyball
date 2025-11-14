@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Contrôle du Match</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    .section { margin-bottom: 30px; }
+    button {
+      font-size: 18px;
+      padding: 10px 16px;
+      margin: 6px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btnA { background-color: #007BFF; color: white; }
+    .btnB { background-color: #28a745; color: white; }
+    .btnSet { background-color: #ffc107; color: black; }
+    .btnCancel { background-color: #dc3545; color: white; }
+
+.big-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.mini-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+
+.team-label {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.score-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+}
+
+
+  </style>
+</head>
+<body>
+<div style="display: flex; justify-content: space-around; align-items: center;">
+  <div class="section">
+    <h2>Équipes</h2>
+    <label for="teamNameA">Équipe A:</label>
+<select id="teamNameA" onchange="updateTeamInfo()">
+  
+  <option value="Notre Dame">Notre Dame - Coyotes</option>
+<!--  
+  <option value="Baldur">Baldur - Vikings</option>
+  <option value="Cartwright">Cartwright - Cougars</option>
+  <option value="Gilbert Rosset">Gilbert Rosset</option>
+  <option value="Glenboro">Glenboro - Panthers</option>
+  <option value="Manitou">Nellie McClung - Stingers</option>
+  <option value="Pilot Mound">Pilot Mound - Pilots</option>
+  <option value="Prairie Mnt">Prairie Mountain - Predators</option>
+  <option value="St-Claude">St-Calude - Olympiens</option>
+  <option value="Treherne">Treherne - Tigers</option> 
+-->
+</select>
+
+
+  <br>
+    <label for="teamNameB">Équipe B:</label>
+<select id="teamNameB" onchange="updateTeamInfo()">
+  <option value="">-- Choisir une équipe --</option>
+  <option value="Baldur">Baldur - Vikings</option>
+  <option value="Cartwright">Cartwright - Cougars</option>
+  <option value="Gilbert Rosset">Gilbert Rosset</option>
+  <option value="Glenboro">Glenboro - Panthers</option>
+  <option value="Manitou">Nellie McClung - Stingers</option>
+  <option value="Pilot Mound">Pilot Mound - Pilots</option>
+  <option value="Prairie Mnt">Prairie Mountain - Predators</option>
+  <option value="St-Claude">St-Calude - Olympiens</option>
+  <option value="Treherne">Treherne - Tigers</option> 
+</select>
+
+  
+  </div>
+<div>
+<label for="matchTitle">Titre du match :</label>
+<input type="text" id="matchTitle" placeholder="... vs Notre Dame" oninput="updateMatchTitle()">
+</div>
+</div>
+
+
+  <div class="section">
+ <!-- <h2>Score</h2> -->
+  <div style="display: flex; justify-content: space-around; align-items: center;">
+    <div style="text-align: center;">
+      <img id="logoScoreA" class="big-logo" src="" alt="Logo A">
+      <div id="labelA" class="team-label">Équipe A</div>
+      <div>Score : <span id="scoreA" class="score-value">0</span></div>
+    </div>
+    <div style="text-align: center;">
+      <img id="logoScoreB" class="big-logo" src="" alt="Logo B">
+      <div id="labelB" class="team-label">Équipe B</div>
+      <div>Score : <span id="scoreB" class="score-value">0</span></div>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 20px;">
+    <button class="btnA" onclick="addScore('A')">+1 A</button>
+    <button class="btnA" onclick="removeScore('A')">−1 A</button>
+    <button class="btnB" onclick="addScore('B')">+1 B</button>
+    <button class="btnB" onclick="removeScore('B')">−1 B</button>
+  </div>
+</div>
+
+<div class="section" style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <!-- Section Sets -->
+  <div style="flex: 1; margin-right: 40px;">
+    <h2>Sets</h2>
+    <p>
+      <span id="labelAsets" class="team-label">Équipe A</span> :
+      <span id="setsA" class="score-value">0</span> |
+      <span id="labelBsets" class="team-label">Équipe B</span> :
+      <span id="setsB" class="score-value">0</span>
+    </p>
+    <button class="btnSet" onclick="validerSet()">Valider le set</button>
+    <button class="btnCancel" onclick="removeLastSet()">Annuler le dernier set</button>
+
+  </div>
+
+  <!-- Historique des sets -->
+  <div style="flex: 1;">
+    <h2>Historique des sets</h2>
+    <div id="setHistoryControl"></div>
+  </div>
+</div>
+
+
+<div class="section" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 40px;">
+
+  <div class="section">
+    <h2>Timer</h2>
+    <p id="timerDisplay" style="font-size: 32px; font-weight: bold;">20:00 
+</p>
+
+ </div>
+    <div class="section">
+    <p align="left">    
+    <button onclick="startTimer()">▶️ Démarrer</button>
+    <button onclick="pauseTimer()">⏸️ Pause</button>
+    <button onclick="resetTimer()">🔄 Réinitialiser</button>
+    <button onclick="playBuzzer()">🔊 Buzzer</button>
+    </p>
+    <label for="timerInput">Durée du timer (minutes) :</label>
+    <input type="number" id="timerInput" value="20" min="1" max="120" style="width: 60px;" onchange="setCustomTimer()">
+  
+</div>
+
+  <div class="section">
+    <h2>Match</h2>
+    <button onclick="resetMatch()">🧹 Réinitialiser le match</button>
+    
+  </div>
+</div>
+
+  <script>
+    let scoreA = 0, scoreB = 0, setsA = 0, setsB = 0;
+    let timeLeft = 20 * 60;
+    let timerInterval = null;
+   let setHistory = JSON.parse(localStorage.getItem('setHistory')) || [];
+
+function validerSet() {
+  if (scoreA === scoreB) return; // pas de set nul
+
+  const winner = scoreA > scoreB ? 'A' : 'B';
+  const set = {
+    scoreA: scoreA,
+    scoreB: scoreB,
+    winner: winner
+  };
+  setHistory.push(set);
+  localStorage.setItem('setHistory', JSON.stringify(setHistory));
+
+  if (winner === 'A') setsA++;
+  else setsB++;
+
+  scoreA = 0;
+  scoreB = 0;
+  updateDisplay();
+  renderSetHistory(); // ← met à jour l'affichage local
+
+}
+
+function removeLastSet() {
+  if (setHistory.length === 0) return;
+
+  const lastSet = setHistory.pop(); // retire le dernier set
+  localStorage.setItem('setHistory', JSON.stringify(setHistory));
+
+  // décrémente le compteur du gagnant
+  if (lastSet.winner === 'A' && setsA > 0) setsA--;
+  if (lastSet.winner === 'B' && setsB > 0) setsB--;
+
+  updateDisplay();
+  renderSetHistory();
+}
+
+function playBuzzer() {
+  const buzzer = document.getElementById('buzzerSound');
+  buzzer.currentTime = 0;
+  buzzer.play();
+}
+  
+
+  function updateTeamInfo() {
+      const nameA = document.getElementById('teamNameA').value || "Équipe A";
+      const nameB = document.getElementById('teamNameB').value || "Équipe B";
+      localStorage.setItem('teamNameA', nameA);
+      localStorage.setItem('teamNameB', nameB);
+      document.getElementById('labelA').textContent = nameA;
+      document.getElementById('labelB').textContent = nameB;
+      document.getElementById('labelAsets').textContent = nameA;
+      document.getElementById('labelBsets').textContent = nameB;
+
+   // Associe les logos automatiquement
+      const logoPathA = nameA ? `logos/${nameA.toLowerCase()}.png` : "";
+      const logoPathB = nameB ? `logos/${nameB.toLowerCase()}.png` : "";
+
+      document.getElementById('logoScoreA').src = logoPathA;
+      document.getElementById('logoScoreB').src = logoPathB;
+
+      localStorage.setItem('logoA', logoPathA);
+      localStorage.setItem('logoB', logoPathB);
+     
+      syncToServer();
+
+    }
+
+function loadLogos() {
+  const logoA = localStorage.getItem('logoA') || "logos/default.png";
+  const logoB = localStorage.getItem('logoB') || "logos/default.png";
+  document.getElementById('logoScoreA').src = logoA;
+  document.getElementById('logoScoreB').src = logoB;
+}
+    
+
+function addScore(team) {
+      if (team === 'A') scoreA++;
+      else scoreB++;
+      updateDisplay();
+    }
+
+    function removeScore(team) {
+      if (team === 'A' && scoreA > 0) scoreA--;
+      else if (team === 'B' && scoreB > 0) scoreB--;
+      updateDisplay();
+    }
+
+
+
+    function removeSet(team) {
+      if (team === 'A' && setsA > 0) setsA--;
+      updateDisplay();
+    }
+
+function setCustomTimer() {
+  const minutes = parseInt(document.getElementById('timerInput').value);
+  if (isNaN(minutes) || minutes < 1) return;
+
+  timeLeft = minutes * 60;
+  updateTimerDisplay();
+  localStorage.setItem('timer', formatTime(timeLeft));
+}
+  
+
+  function updateDisplay() {
+      document.getElementById('scoreA').textContent = scoreA;
+      document.getElementById('scoreB').textContent = scoreB;
+      document.getElementById('setsA').textContent = setsA;
+      document.getElementById('setsB').textContent = setsB;
+      localStorage.setItem('scoreA', scoreA);
+      localStorage.setItem('scoreB', scoreB);
+      localStorage.setItem('setsA', setsA);
+      localStorage.setItem('setsB', setsB);
+      syncToServer()
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateTimerDisplay();
+          localStorage.setItem('timer', formatTime(timeLeft));
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+	  document.getElementById('buzzerSound').play(); // 🔊 joue le buzzer
+
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+function updateMatchTitle() {
+  const title = document.getElementById('matchTitle').value || "";
+  localStorage.setItem('matchTitle', title);
+  syncToServer();
+}
+
+
+function resetTimer() {
+  const minutes = parseInt(document.getElementById('timerInput').value) || 20;
+  timeLeft = minutes * 60;
+  updateTimerDisplay();
+  localStorage.setItem('timer', formatTime(timeLeft));
+}
+
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('timerDisplay').textContent =
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+
+function resetMatch() {
+  scoreA = 0;
+  scoreB = 0;
+  setsA = 0;
+  setsB = 0;
+  timeLeft = 20 * 60;
+  pauseTimer();
+
+  // Efface tout le localStorage
+  localStorage.removeItem('teamNameA');
+  localStorage.removeItem('teamNameB');
+  localStorage.removeItem('logoA');
+  localStorage.removeItem('logoB');
+  localStorage.removeItem('scoreA');
+  localStorage.removeItem('scoreB');
+  localStorage.removeItem('setsA');
+  localStorage.removeItem('setsB');
+  localStorage.removeItem('timer');
+  localStorage.removeItem('setHistory');
+  localStorage.removeItem('matchTitle');
+
+
+
+
+  // Réinitialise les champs et l'affichage
+  document.getElementById('teamNameA').value = "Notre Dame";
+  document.getElementById('teamNameB').value = "";
+  document.getElementById('matchTitle').value = "";
+  document.getElementById('logoScoreA').src = "";
+  document.getElementById('logoScoreB').src = "";
+  document.getElementById('labelA').textContent = "Équipe A";
+  document.getElementById('labelB').textContent = "Équipe B";
+  document.getElementById('labelAsets').textContent = "Équipe A";
+  document.getElementById('labelBsets').textContent = "Équipe B";
+  setTimeout(updateTeamInfo, 0);
+
+
+
+/**
+  // Réinitialise les champs
+  document.getElementById('teamNameA').value = "";
+  document.getElementById('teamNameB').value = "";
+  document.getElementById('logoA').value = "";
+  document.getElementById('logoB').value = "";
+  document.getElementById('matchTitle').value = "";
+
+  // Réinitialise l’affichage
+  document.getElementById('labelA').textContent = "Équipe A";
+  document.getElementById('labelB').textContent = "Équipe B";
+  document.getElementById('labelAsets').textContent = "Équipe A";
+  document.getElementById('labelBsets').textContent = "Équipe B";
+  document.getElementById('scoreA').textContent = "0";
+  document.getElementById('scoreB').textContent = "0";
+  document.getElementById('setsA').textContent = "0";
+  document.getElementById('setsB').textContent = "0";
+  document.getElementById('timerDisplay').textContent = "20:00";
+*/
+
+
+
+  // Efface les logos visuellement
+  document.getElementById('logoScoreA').src = "";
+  document.getElementById('logoScoreB').src = "";
+
+  // Efface l’historique des sets
+  setHistory = [];
+  renderSetHistory();
+
+ 
+}
+
+
+function uploadLogo(team) {
+  const input = document.getElementById(`logo${team}`);
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataURL = e.target.result;
+    localStorage.setItem(`logo${team}`, dataURL);
+    document.getElementById(`logoScore${team}`).src = dataURL;
+  };
+  reader.readAsDataURL(file);
+}
+
+function loadLogos() {
+  const logoA = localStorage.getItem('logoA');
+  const logoB = localStorage.getItem('logoB');
+
+  if (logoA) document.getElementById('logoScoreA').src = logoA;
+  if (logoB) document.getElementById('logoScoreB').src = logoB;
+
+}
+
+function renderSetHistory() {
+  const container = document.getElementById('setHistoryControl');
+  container.innerHTML = "";
+
+  setHistory.forEach((set, index) => {
+    const div = document.createElement('div');
+    div.style.fontSize = "20px";
+    div.style.margin = "4px 0";
+
+    const colorA = set.winner === 'A' ? "#007BFF" : "#999";
+    const colorB = set.winner === 'B' ? "#28a745" : "#999";
+
+    div.innerHTML = `
+      Set ${index + 1} :
+      <span style="color:${colorA}">${set.scoreA}</span> -
+      <span style="color:${colorB}">${set.scoreB}</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function syncToServer() {
+  const data = {
+    scoreA,
+    scoreB,
+    setsA,
+    setsB,
+    setHistory,
+    timer: formatTime(timeLeft),
+    teamNameA: document.getElementById('teamNameA').value,
+    teamNameB: document.getElementById('teamNameB').value,
+    matchTitle: document.getElementById('matchTitle').value
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbxayQBE68hVtfqKuFcha8x3ntz0G-K4EXaCIMYfzI19TkYL16MLB-PCRvrQoRUmAnT4/exec", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  });
+}
+   
+
+ window.onload = () => {
+      scoreA = parseInt(localStorage.getItem('scoreA')) || 0;
+      scoreB = parseInt(localStorage.getItem('scoreB')) || 0;
+      setsA = parseInt(localStorage.getItem('setsA')) || 0;
+      setsB = parseInt(localStorage.getItem('setsB')) || 0;
+      const savedTime = localStorage.getItem('timer');
+      if (savedTime) {
+        const [m, s] = savedTime.split(':').map(Number);
+        timeLeft = m * 60 + s;
+      }
+      
+
+      updateTeamInfo();
+      updateDisplay();
+      updateTimerDisplay();
+      loadLogos();
+      renderSetHistory();
+
+    };
+
+  </script>
+<audio id="buzzerSound" src="buzzer.mp3" preload="auto"></audio>
+</body>
+</html>

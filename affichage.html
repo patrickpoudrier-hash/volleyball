@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Affichage du Match</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #111;
+      color: white;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 40px;
+    }
+
+    .team {
+      display: inline-block;
+      width: 40%;
+      vertical-align: top;
+      font-size: 50px;
+    }
+
+    .score, .sets {
+      font-size: 36px;
+      margin: 30px 0;
+    }
+
+    .timer {
+      font-size: 48px;
+      margin: 40px 0;
+      font-weight: bold;
+    }
+
+    .logo {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+.match-title {
+  font-size: 48px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #007BFF, #28a745);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+  text-transform: uppercase;
+}
+
+  </style>
+</head>
+<body>
+<h1 id="matchTitleDisplay" class="match-title">Match en cours</h1>
+
+
+  <div class="teams" style="display: flex; justify-content: space-around; align-items: center;">
+  <!-- Équipe A -->
+  <div class="team">
+    <img id="logoA" class="logo" src="" alt="">
+    <div id="teamNameA">Équipe A</div>
+    <div class="score">Score : <span id="scoreA">0</span></div>
+    <div class="sets">Sets : <span id="setsA">0</span></div>
+  </div>
+<div style="text-align: center; margin-top: 30px;">
+  <div id="timerDisplay" class="timer">20:00</div>
+
+  <div id="setHistoryDisplay" style="margin-top: 20px;">
+    <h2>Sets joués</h2>
+    <!-- contenu généré dynamiquement -->
+  </div>
+</div>
+
+
+  <!-- Timer au centre -->
+ <!-- <div class="timer" id="timerDisplay" style="font-size: 48px; font-weight: bold;">20:00</div>
+-->
+  <!-- Équipe B -->
+  <div class="team">
+    <img id="logoB" class="logo" src="" alt="">
+    <div id="teamNameB">Équipe B</div>
+    <div class="score">Score : <span id="scoreB">0</span></div>
+    <div class="sets">Sets : <span id="setsB">0</span></div>
+  </div>
+</div>
+
+<!--  
+<div id="setHistoryDisplay" style="margin-top: 40px;">
+  <h2>Sets joués</h2>
+</div>  
+-->
+
+
+  <script>
+    function refreshDisplay() {
+const setHistory = JSON.parse(localStorage.getItem('setHistory')) || [];
+  const container = document.getElementById('setHistoryDisplay');
+  container.innerHTML = "<h2>Sets joués</h2>";      
+document.getElementById('scoreA').textContent = localStorage.getItem('scoreA') || "0";
+      document.getElementById('scoreB').textContent = localStorage.getItem('scoreB') || "0";
+      document.getElementById('setsA').textContent = localStorage.getItem('setsA') || "0";
+      document.getElementById('setsB').textContent = localStorage.getItem('setsB') || "0";
+
+      document.getElementById('teamNameA').textContent = localStorage.getItem('teamNameA') || "Équipe A";
+      document.getElementById('teamNameB').textContent = localStorage.getItem('teamNameB') || "Équipe B";
+
+      const logoA = localStorage.getItem('logoA');
+      const logoB = localStorage.getItem('logoB');
+      document.getElementById('logoA').src = logoA || "";
+      document.getElementById('logoB').src = logoB || "";
+
+const title = localStorage.getItem('matchTitle') || "Match en cours";
+document.getElementById('matchTitleDisplay').textContent = title;
+
+
+  setHistory.forEach((set, index) => {
+    const div = document.createElement('div');
+    div.style.fontSize = "24px";
+    div.style.margin = "6px 0";
+
+    const colorA = set.winner === 'A' ? "#00ff00" : "#ccc";
+    const colorB = set.winner === 'B' ? "#00ff00" : "#ccc";
+
+    div.innerHTML = `
+      Set ${index + 1} :
+      <span style="color:${colorA}">${set.scoreA}</span> -
+      <span style="color:${colorB}">${set.scoreB}</span>
+    `;
+    container.appendChild(div);
+  });
+
+
+      document.getElementById('timerDisplay').textContent = localStorage.getItem('timer') || "20:00";
+    }
+
+    // Rafraîchit l'affichage toutes les secondes
+    setInterval(refreshDisplay, 1000);
+    window.onload = refreshDisplay;
+  </script>
+</body>
+</html>
