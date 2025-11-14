@@ -99,6 +99,24 @@
 
 
   <script>
+   function fetchFromServer() {
+  fetch("https://script.google.com/macros/s/AKfycbxayQBE68hVtfqKuFcha8x3ntz0G-K4EXaCIMYfzI19TkYL16MLB-PCRvrQoRUmAnT4/exec")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('labelA').textContent = data.teamNameA;
+      document.getElementById('labelB').textContent = data.teamNameB;
+      document.getElementById('matchTitleDisplay').textContent = data.matchTitle;
+      document.getElementById('scoreA').textContent = data.scoreA;
+      document.getElementById('scoreB').textContent = data.scoreB;
+      document.getElementById('setsA').textContent = data.setsA;
+      document.getElementById('setsB').textContent = data.setsB;
+      document.getElementById('timerDisplay').textContent = data.timer;
+      // Tu peux aussi mettre à jour l’historique des sets ici
+    });
+}
+
+    
+    
     function refreshDisplay() {
 const setHistory = JSON.parse(localStorage.getItem('setHistory')) || [];
   const container = document.getElementById('setHistoryDisplay');
@@ -142,7 +160,9 @@ document.getElementById('matchTitleDisplay').textContent = title;
 
     // Rafraîchit l'affichage toutes les secondes
     setInterval(refreshDisplay, 1000);
+    setInterval(fetchFromServer, 2000);
     window.onload = refreshDisplay;
   </script>
 </body>
 </html>
+
