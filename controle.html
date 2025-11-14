@@ -253,6 +253,8 @@ function addScore(team) {
       if (team === 'A') scoreA++;
       else scoreB++;
       updateDisplay();
+      syncToJsonBin(); // ← doit être appelé ici
+
     }
 
     function removeScore(team) {
